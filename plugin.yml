@@ -6,5 +6,5 @@ author: tyhupo
 commands:
     dcscores:
         description: Manage disneycraft scores
-        usage: /dcscores <cmd>
+        usage: /<command> [commande] [joueur] [valeur]
         aliases: dcs

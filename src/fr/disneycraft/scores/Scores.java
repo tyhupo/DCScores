@@ -1,11 +1,12 @@
 package fr.disneycraft.scores;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,6 +27,7 @@ public class Scores extends JavaPlugin{
 	String name;
 	private File file;
     private FileConfiguration fileConfig;
+    private final String USER_AGENT = "Mozilla/5.0";
     
 	
 	@Override
@@ -116,6 +118,8 @@ public class Scores extends JavaPlugin{
                 		//-- TODO : Initialiser le score à 0 dans la base de donnée pour le joueur player
                 		String post="init=true&player="+player;
                 		post(post);
+                		
+                		return true;
                 	}
                 }
 	            if(sender.hasPermission("dcscores.manage")){
@@ -128,11 +132,13 @@ public class Scores extends JavaPlugin{
 	                		//-- TODO : Incrémenter le score du joueur player de value dans la base de donnée
 	                		String post="login=0&player="+player+"&value="+value;
 	                		post(post);
+	                		return true;
 	                	}
 	                	if(cmd.equals("loginadd")){
 	                		//-- TODO : Incrémenter le score du joueur player de value dans la base de donnée
 	                		String post="login=1&player="+player+"&value="+value;
 	                		post(post);
+	                		return true;
 	                	}
 	                }
                 }
@@ -169,16 +175,45 @@ public class Scores extends JavaPlugin{
     }
 	
 	public void post(String post){
-		String ur = "www.disneycraft.fr\\scores.php";
+		System.out.println("POST : "+post);
+		String ur = "http://www.disneycraft.fr/scores.php";
 		try{
-			URL url = new URL(ur);
-			URLConnection  conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-			writer.write(post);
-			writer.flush();
+			URL obj = new URL(ur);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+	 
+			//add reuqest header
+			con.setRequestMethod("POST");
+			con.setRequestProperty("User-Agent", USER_AGENT);
+			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+	 
+			String urlParameters = post;
+	 
+			// Send post request
+			con.setDoOutput(true);
+			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+			wr.writeBytes(urlParameters);
+			wr.flush();
+			wr.close();
+	 
+			int responseCode = con.getResponseCode();
+			System.out.println("\nSending 'POST' request to URL : " + ur);
+			System.out.println("Post parameters : " + urlParameters);
+			System.out.println("Response Code : " + responseCode);
+	 
+			BufferedReader in = new BufferedReader(
+			        new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+	 
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
 		}
-		catch(Exception e){}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}
 	}
 }
 
