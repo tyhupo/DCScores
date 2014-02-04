@@ -209,7 +209,7 @@ public class Scores extends JavaPlugin{
 				response.append(inputLine);
 			}
 			in.close();
-
+			
 		}
 		catch(Exception e){
 			System.out.println(e.getMessage());
