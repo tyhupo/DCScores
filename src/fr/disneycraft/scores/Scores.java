@@ -62,6 +62,7 @@ public class Scores extends JavaPlugin{
             	{
             		fileConfig.set(player.getName(),dat);
             		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "dcscores init "+player.getName());
+            		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "dcscores loginadd "+player.getName()+" 1");
             		try
                     {
                             // On essait de sauvegarder
@@ -160,8 +161,6 @@ public class Scores extends JavaPlugin{
 	            	Date actuelle = new Date();
 	            	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	            	String dat = dateFormat.format(actuelle);
-	            		
-	            fileConfig.set("tyhupo", dat);
 	            
 	            try
 	            {
